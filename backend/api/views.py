@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import EquipmentDataset
 import pandas as pd
@@ -8,7 +9,9 @@ from django.http import HttpResponse
 from io import BytesIO
 
 
+# 🔓 Public: CSV Upload (no authentication)
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def upload_csv(request):
     file = request.FILES.get('file')
 
@@ -37,7 +40,9 @@ def upload_csv(request):
     return Response(summary)
 
 
+# 🔓 Public: latest summary
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def latest_summary(request):
     last = EquipmentDataset.objects.last()
     if not last:
@@ -45,7 +50,9 @@ def latest_summary(request):
     return Response(last.summary)
 
 
+# 🔓 Public: history
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def history(request):
     data = EquipmentDataset.objects.order_by('-upload_time')[:5]
     result = []
@@ -58,7 +65,9 @@ def history(request):
     return Response(result)
 
 
+# 🔒 PROTECTED: PDF report (Basic Authentication REQUIRED)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def generate_pdf(request):
     last = EquipmentDataset.objects.last()
     if not last:

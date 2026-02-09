@@ -5,8 +5,10 @@ A hybrid application that works as:
 - 🖥 Desktop App (PyQt5 + Matplotlib)
 - ⚙ Backend (Django + Django REST Framework)
 
-The app allows users to upload a CSV file containing chemical equipment data and visualizes summary statistics and equipment type distribution.
+<<<<<<< HEAD
 
+>>>>>>> Enhance UI for web and desktop with clean styling
+  
 ---
 
 ## 🚀 Features
@@ -45,3 +47,7 @@ The app allows users to upload a CSV file containing chemical equipment data and
 
 ## 📂 Project Structure
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Enhance UI for web and desktop with clean styling

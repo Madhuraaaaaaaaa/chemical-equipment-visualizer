@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import "./App.css";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -19,14 +20,17 @@ function App() {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file first");
+      alert("Please select a CSV file first");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await axios.post("http://127.0.0.1:8001/api/upload/", formData);
+    const res = await axios.post(
+      "http://127.0.0.1:8001/api/upload/",
+      formData
+    );
     setSummary(res.data);
     fetchHistory();
   };
@@ -51,40 +55,52 @@ function App() {
           {
             label: "Equipment Count",
             data: Object.values(summary.type_distribution),
+            backgroundColor: "#1976d2",
           },
         ],
       }
     : null;
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="app-container">
       <h2>Chemical Equipment Parameter Visualizer</h2>
 
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button onClick={handleUpload}>Upload CSV</button>
-      <button onClick={downloadPDF}>Download PDF Report</button>
+      <div className="section upload-box">
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button onClick={handleUpload}>Upload CSV</button>
+        <button className="secondary-btn" onClick={downloadPDF}>
+          Download PDF
+        </button>
+      </div>
 
       {summary && (
         <>
-          <h3>Summary</h3>
-          <p>Total Count: {summary.total_count}</p>
-          <p>Avg Flowrate: {summary.avg_flowrate}</p>
-          <p>Avg Pressure: {summary.avg_pressure}</p>
-          <p>Avg Temperature: {summary.avg_temperature}</p>
+          <div className="section summary">
+            <h3>Summary</h3>
+            <p>Total Count: {summary.total_count}</p>
+            <p>Avg Flowrate: {summary.avg_flowrate}</p>
+            <p>Avg Pressure: {summary.avg_pressure}</p>
+            <p>Avg Temperature: {summary.avg_temperature}</p>
+          </div>
 
-          <h3>Equipment Type Distribution</h3>
-          <Bar data={chartData} />
+          <div className="section chart-box">
+            <h3>Equipment Type Distribution</h3>
+            <Bar data={chartData} />
+          </div>
         </>
       )}
 
-      <h3>Upload History</h3>
-      <ul>
-        {history.map((item, index) => (
-          <li key={index}>
-            {item.name} — {item.upload_time}
-          </li>
-        ))}
-      </ul>
+      <div className="section history">
+        <h3>Upload History</h3>
+        <ul>
+          {history.map((item, index) => (
+            <li key={index}>
+              {item.name} —{" "}
+              {new Date(item.upload_time).toLocaleString()}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

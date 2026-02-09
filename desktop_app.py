@@ -14,9 +14,10 @@ class App(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chemical Equipment Visualizer (Desktop)")
-        self.setGeometry(200, 200, 600, 600)
+        self.setGeometry(200, 200, 700, 700)
 
         self.layout = QVBoxLayout()
+        self.layout.setSpacing(12)
 
         self.label = QLabel("No file selected")
         self.layout.addWidget(self.label)
@@ -32,7 +33,7 @@ class App(QWidget):
         self.result_label = QLabel("")
         self.layout.addWidget(self.result_label)
 
-        self.figure = Figure()
+        self.figure = Figure(facecolor="#1e1e1e")
         self.canvas = FigureCanvas(self.figure)
         self.layout.addWidget(self.canvas)
 
@@ -49,7 +50,7 @@ class App(QWidget):
 
     def upload_file(self):
         if not self.file_path:
-            self.result_label.setText("Please select a file first")
+            self.result_label.setText("⚠️ Please select a file first")
             return
 
         with open(self.file_path, "rb") as f:
@@ -71,17 +72,42 @@ class App(QWidget):
     def plot_chart(self, dist):
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.bar(dist.keys(), dist.values())
-        ax.set_title("Equipment Type Distribution")
+        ax.bar(dist.keys(), dist.values(), color="#3a7afe")
+        ax.set_title("Equipment Type Distribution", color="white")
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+        ax.set_facecolor("#1e1e1e")
+        self.figure.tight_layout()
         self.canvas.draw()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = App()
+
+    # 🎨 Minimal PyQt Styling (clean & safe)
+    window.setStyleSheet("""
+        QWidget {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        QPushButton {
+            background-color: #3a7afe;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        QPushButton:hover {
+            background-color: #2f66d0;
+        }
+
+        QLabel {
+            font-size: 14px;
+        }
+    """)
+
     window.show()
     sys.exit(app.exec_())
-
-
-
-
